@@ -79,7 +79,7 @@ watch(store.state.isLoggedIn, (new_value, old_value) => {
 
     </nav>
     <div>
-        <div class="absolute max-h-screen overflow-hidden w-full flex pt-[64px]">
+        <div class="absolute min-h-screen max-h-screen overflow-hidden w-full flex pt-[64px]">
             <Sidebar />
             <!-- Page Content -->
             <main class="my-4 px-6 py-4 mx-3  bg-white w-full">

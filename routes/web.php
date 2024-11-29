@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,7 +21,7 @@ Route::get('/', function () {
 })->middleware([])->name('dashboard');
 
 Route::get('/timesheet', [TimesheetController::class, 'show_timesheet_page']) -> name('show_timesheet_page');
-Route::get('/application', [TimesheetController::class, 'show_timesheet_page']) -> name('show_timesheet_page');
+Route::get('/application', [ApplicationController::class, 'show_application_page']) -> name('show_application_page');
 
 
 Route::middleware('auth')->group(function () {

@@ -1,7 +1,10 @@
 <template>
     <AuthenticatedLayout>
-        <PageHeader title="Timesheet" />
-
+        <PageHeader title="Applications" />
+        
+        <div>
+            <button class="border px-2 py-1 my-2 bg-purple-500 text-white text-semibold">Add New </button>
+        </div>
         <div class="flex flex-wrap -mx-3 mb-5  ">
             <div class="w-full max-w-full px-3 mb-6  mx-auto">
                 <div
@@ -50,12 +53,12 @@
                                         <tr class="font-semibold text-[0.95rem] text-secondary-dark ">
                                             <th class="px-3 py-2 border text-end min-w-[2px] "></th>
                                             <th class="px-3 py-2 border text-start ">Date</th>
-                                            <th class="px-3 py-2 border  text-start ">Work Day</th>
-                                            <th class="px-3 py-2 border  text-start ">Work Day Type</th>
-                                            <th class="px-3 py-2 border  text-start ">Checkin Time</th>
-                                            <th class="px-3 py-2 border  text-start ">Checkout Time</th>
-                                            <th class="px-3 py-2 border  text-start ">Overtime</th>
-                                            <th class="px-3 py-2 border  text-end ">Total W.H. </th>
+                                            <th class="px-3 py-2 border  text-start ">Application Type</th>
+                                            <th class="px-3 py-2 border  text-start ">Start Time</th>
+                                            <th class="px-3 py-2 border  text-start ">End Time</th>
+                                            <th class="px-3 py-2 border  text-start ">Description</th>
+                                            <th class="px-3 py-2 border  text-start ">Is Approved</th>
+                                            <th class="px-3 py-2 border  text-end ">Approved By </th>
                                             <th class="px-3 py-2 border  text-end ">Remarks</th>
                                         </tr>
                                     </thead>
@@ -126,70 +129,20 @@
 </template>
 
 <script setup>
-
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PageHeader from '@/Components/PageHeader.vue';
-import { differenceInMinutes, endOfMonth, format, isSaturday, isSunday, startOfMonth } from 'date-fns';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { differenceInMinutes, startOfMonth, endOfMonth, format, isSaturday, isSunday } from 'date-fns';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import PageHeader from '@/Components/PageHeader.vue';
 import { onMounted, watch , ref} from 'vue';
-import ApiHandler from '@/utils/apihandlers';
+import ApiHandler from "@/utils/apihandlers";
+
 
 
 
 const start_date = ref(startOfMonth(new Date()));
 const end_date = ref(endOfMonth(new Date()));
 const http = new ApiHandler()
-const timesheet_data = ref([])
+const timesheet_data = ref([]);
 
-
-onMounted(() => {
-    fetchData();
-});
-
-
-const fetchData = () => {
-    http.get(`api/timesheet/?start_date=${format(start_date.value, 'yyy-MM-dd')}&end_date=${format(end_date.value, 'yyyy-MM-dd')}`)
-        .then(response => {
-            const result = response.data
-            timesheet_data.value = result.data
-            console.log(timesheet_data.value);
-        }).catch(error => {
-            console.log(error);
-        })
-}
-
-watch([start_date], ()=>{
-    fetchData();
-})
-watch([end_date], ()=>{
-    fetchData();
-})
-
-const getHolidayClass = (item) => {
-    if (isInvalidCheckin(item)) {
-        return ''
-    }
-
-    if (item.day_type === 'HOLIDAY' || isSaturday(item.working_date) || isSunday(item.working_date))
-        return 'bg-red-400 text-gray-50'
-    else {
-        return 'bg-green-50'
-    }
-};
-
-const isInvalidCheckin = (item) => {
-    return item.checkin_time && !item.checkout_time
-};
-
-
-const getTotalWorkingHour = (item) => {
-    if (!item.checkin_time || !item.checkout_time) {
-        return
-    }
-    const start_time = new Date(`${item.working_date} ${item.checkin_time}`)
-    const end_time = new Date(`${item.working_date} ${item.checkout_time}`)
-    const difference = (differenceInMinutes(end_time, start_time) / 60).toFixed(2);
-    return `${difference} Hrs.`
-}
 </script>
